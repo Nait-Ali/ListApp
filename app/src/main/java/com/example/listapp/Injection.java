@@ -9,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Injection {
     private static RestApiChampionLol restApiChampionLol;
 
-    //Singleton
+    //Singleto
     public static RestApiChampionLol getRestApi(){
         if(restApiChampionLol == null){
             Gson gson = new GsonBuilder()
