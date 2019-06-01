@@ -8,5 +8,5 @@ import retrofit2.http.Query;
 
 public interface RestApiChampionLol {
     @GET("champions.json")
-    Call<List<Champion>> getChampionData();
+    Call<RestChampionResponse> getChampionData();
 }

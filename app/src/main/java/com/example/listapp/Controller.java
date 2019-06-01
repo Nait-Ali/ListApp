@@ -1,15 +1,9 @@
 package com.example.listapp;
 import java.util.List;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
 public class Controller {
 
     private final MainActivity mainActivity;
@@ -22,65 +16,137 @@ public class Controller {
 
 
     public void onCreate() {
-        Call<List<Champion>> call = restApiChampionLol.getChampionData();
-        call.enqueue(new Callback<List<Champion>>() {
+        Call<RestChampionResponse> call = restApiChampionLol.getChampionData();
+        call.enqueue(new Callback<RestChampionResponse>() {
             @Override
-            public void onResponse(Call<List<Champion>> call, Response<List<Champion>> response) {
-                List<Champion> championList = response.body();
-                mainActivity.showList(championList);
-            }
-
-            @Override
-            public void onFailure(Call<List<Champion>> call, Throwable t) {
-
-            }
-        });
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   /* public void downloadData() {
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .create();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-
-        RestApiChampionLol restApiChampionLol = retrofit.create(RestApiChampionLol.class);
-        Call<List<RestChampionResponse>> call = restApiChampionLol.getChampionData();
-        call.enqueue(new Callback<List<RestChampionResponse>>() {
-            @Override
-            public void onResponse(Call<List<RestChampionResponse>> call, Response<List<RestChampionResponse>> response) {
+            public void onResponse(Call<RestChampionResponse> call, Response<RestChampionResponse> response) {
                 if (response.isSuccessful()) {
-                    List<RestChampionResponse> changesList = response.body();
-                    //changesList.forEach(change -> System.out.println(change.subject));
-                } else {
+                    RestChampionResponse restApiChampionLol = response.body();
+                    List<Champion> championList = restApiChampionLol.getResults();
+                    mainActivity.showList(championList);
+                }else{
                     System.out.println(response.errorBody());
                 }
             }
 
             @Override
-            public void onFailure(Call<List<RestChampionResponse>> call, Throwable t) {
-                t.printStackTrace();
+            public void onFailure(Call<RestChampionResponse> call, Throwable t) {
+
+            }
+        });
+    }
+}
+
+/*public class MainController {
+
+
+
+    private MainActivity view;
+
+
+
+    private PokemonRestApi pokemonRestApi;
+
+
+
+    private SharedPreferences sharedPreferences;
+
+
+
+    public MainController(MainActivity view, PokemonRestApi pokemonRestApi, SharedPreferences sharedPreferences) {
+
+        this.view = view;
+
+        this.pokemonRestApi = pokemonRestApi;
+
+        this.sharedPreferences = sharedPreferences;
+
+    }
+
+
+
+    public void start() {
+
+        Call<RestPokemonResponse> call = pokemonRestApi.getPokemonList();
+
+        call.enqueue(new Callback<RestPokemonResponse>() {
+
+            @Override
+
+            public void onResponse(Call<RestPokemonResponse> call, Response<RestPokemonResponse> response) {
+
+                if(response.isSuccessful()) {
+
+                    RestPokemonResponse restPokemonResponse = response.body();
+
+                    List<Pokemon> pokemonList = restPokemonResponse.getResults();
+
+                    storeData(pokemonList);
+
+                    view.showList(pokemonList);
+
+                } else {
+
+                    System.out.println(response.errorBody());
+
+                }
+
+            }
+
+
+
+            @Override
+
+            public void onFailure(Call<RestPokemonResponse> call, Throwable t) {
+
+                Log.d("API ERROR", "onFailure");
+
+                List<Pokemon> pokemonList = getDataFromCache();
+
+                view.showList(pokemonList);
+
             }
 
         });
-    }*/
-}
+
+    }
+
+
+
+    private void storeData(List<Pokemon> pokemonList) {
+
+        Gson gson = new Gson();
+
+        String listPokemonString = gson.toJson(pokemonList);
+
+        sharedPreferences
+
+                .edit()
+
+                .putString("cle_string", listPokemonString)
+
+                .apply();
+
+    }
+
+
+
+    private List<Pokemon> getDataFromCache() {
+
+        String listPokemonString = sharedPreferences.getString("cle_string", "");
+
+        if(listPokemonString != null && !TextUtils.isEmpty(listPokemonString)){
+
+            Type listType = new TypeToken<List<Pokemon>>(){}.getType();
+
+            List<Pokemon> pokemonList = new Gson().fromJson(listPokemonString, listType);
+
+            return pokemonList;
+
+        }
+
+        return new ArrayList<>();
+
+    }
+
+}*/
